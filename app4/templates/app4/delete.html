@@ -1,0 +1,16 @@
+{% extends "layout/base.html" %}
+
+{% block title %}Delete Friend{% endblock %}
+
+{% block content %}
+<section>
+    <div>
+        Delete Friend
+    </div>
+    <form action="" method="post">{% csrf_token %}
+        <p>Are you sure you want to delete "{{ Friend }}"?</p>
+        <input type="submit" value="Confirm" />
+    </form>
+    <a href="{% url 'index' %}"><button> decline </button></a>
+</section>
+{% endblock %}
