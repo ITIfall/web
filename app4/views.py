@@ -34,17 +34,10 @@ def postFriend(request):
         #print(form.fields["rubric"].choices)
         if form.is_valid():
           #  form.cleaned_data["rubric"]
-            print(form.cleaned_data["rubric"])
             instance = form.save()
-            print(type(instance))
-            #rubric_name = instance["rubric"].name
-            # rubric_name = Rubric.objects.get(pk=instance["rubric"])
-            # print(rubric_name)
-            # serialize in new friend object in json
             ser_instance = serializers.serialize('json', [instance, ])
             # send to client side.
             response_dict = {"instance": ser_instance, "rubric_name": str(form.cleaned_data["rubric"])}
-            print (response_dict)
             return JsonResponse(response_dict, status=200)
         else:
             # some form errors occured.
@@ -92,23 +85,3 @@ class FriendUpdateView(UpdateView):
     template_name_suffix = '_update_form'
 
     # employee = get_object_or_404(pk=kwargs.get('employee_id')
-"""
-def picFriend(request):
-    # request should be ajax and method should be POST.
-    if request.is_ajax and request.method == "POST":
-        # get the form data
-        form = FriendForm(request.POST)
-        # save the data and after fetch the object in instance
-        if form.is_valid():
-            instance = form.save()
-            # serialize in new friend object in json
-            ser_instance = serializers.serialize('json', [instance, ])
-            # send to client side.
-            return JsonResponse({"instance": ser_instance}, status=200)
-        else:
-            # some form errors occured.
-            return JsonResponse({"error": form.errors}, status=400)
-
-    # some error occured
-    return JsonResponse({"error": ""}, status=400)
-"""
