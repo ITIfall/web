@@ -4,14 +4,14 @@ from django.core import serializers
 from django.urls import reverse_lazy
 from django.views.generic import UpdateView, DeleteView
 
-from .forms import FriendForm
-from .models import Friend, Rubric
+from .forms import AnnForm
+from .models import Announcement, Rubric
 
 
 def indexView(request):
     context = {}
-    form = FriendForm(request.POST or None)
-    friends = Friend.objects.all()
+    form = AnnForm(request.POST or None)
+    friends = Announcement.objects.all()
     rubrics = Rubric.objects.all()
     context['form'] = form
     context['friends'] = friends
@@ -25,63 +25,48 @@ def indexView(request):
     return render(request, "app4/index.html", context)
 
 
-def postFriend(request):
-    # request should be ajax and method should be POST.
+def postAnn(request):
     if request.is_ajax and request.method == "POST":
-        # get the form data
-        form = FriendForm(request.POST)
-        # save the data and after fetch the object in instance
-        #print(form.fields["rubric"].choices)
+        form = AnnForm(request.POST)
         if form.is_valid():
-          #  form.cleaned_data["rubric"]
             instance = form.save()
             ser_instance = serializers.serialize('json', [instance, ])
-            # send to client side.
             response_dict = {"instance": ser_instance, "rubric_name": str(form.cleaned_data["rubric"])}
             return JsonResponse(response_dict, status=200)
         else:
-            # some form errors occured.
             return JsonResponse({"error": form.errors}, status=400)
-
-    # some error occured
     return JsonResponse({"error": ""}, status=400)
 
 
-def checkNickName(request):
-    # request should be ajax and method should be GET.
+def checkTitle(request):
     if request.is_ajax and request.method == "GET":
-        # get the nick name from the client side.
         nick_name = request.GET.get("nick_name", None)
-        # check for the nick name in the database.
-        if Friend.objects.filter(nick_name = nick_name).exists():
-            # if nick_name found return not valid new friend
+        if Announcement.objects.filter(nick_name = nick_name).exists():
             return JsonResponse({"valid":False}, status=200)
         else:
-            # if nick_name not found, then user can create a new friend.
             return JsonResponse({"valid":True}, status=200)
 
     return JsonResponse({}, status=400)
 
 
 def by_rubric(request, rubric_id):
-    friends = Friend.objects.filter(rubric=rubric_id)
+    friends = Announcement.objects.filter(rubric=rubric_id)
     rubrics = Rubric.objects.all()
     current_rubric = Rubric.objects.get(pk=rubric_id)
     context = {'friends': friends, 'rubrics': rubrics, 'current_rubric': current_rubric}
     return render(request, 'app4/by_rubric.html ', context)
 
 
-class FriendDeleteView(DeleteView):
+class AnnDeleteView(DeleteView):
     template_name = 'app4/delete.html'
-    model = Friend
+    model = Announcement
     success_url = reverse_lazy('index')
 
 
-class FriendUpdateView(UpdateView):
+class AnnUpdateView(UpdateView):
     template_name = 'app4/update.html'
     success_url = reverse_lazy('index')
-    model = Friend
+    model = Announcement
     fields = ('nick_name', 'description', 'price', 'rubric')
     template_name_suffix = '_update_form'
 
-    # employee = get_object_or_404(pk=kwargs.get('employee_id')

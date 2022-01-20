@@ -3,7 +3,7 @@ from django.db import models
 # Create your models here.
 
 
-class Friend(models.Model):
+class Announcement(models.Model):
 
     # NICK NAME should be unique
     nick_name = models.CharField(max_length=100, verbose_name='Объявление',  unique =  True)

@@ -1,12 +1,12 @@
-from .models import Friend
+from .models import Announcement
 from django import forms
 import datetime
 
 
-class FriendForm (forms.ModelForm):
+class AnnForm (forms.ModelForm):
 
     class Meta:
-        model = Friend
+        model = Announcement
         fields = ('nick_name', 'description', 'price', 'rubric')
 
 
