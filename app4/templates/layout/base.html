@@ -14,9 +14,9 @@
 
 <body>
     <nav>
-        <a href="{% url 'index' %}">Главная</a>
+        <a href="{% url 'index' %}" class="btn btn-primary btn-lg active" role="button" aria-pressed="true">Главная</a>
         {% for rubric in rubrics %}
-        <a href="{% url 'by_rubric' rubric.pk %}">{{ rubric.name }}</a>
+        <a href="{% url 'by_rubric' rubric.pk %}" class="btn btn-secondary btn-lg active" role="button" aria-pressed="true">{{ rubric.name }}</a>
         {% endfor %}
     </nav>
     {% block content %}
